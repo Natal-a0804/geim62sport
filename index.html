@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Спорт — наш друг: игра для детей 6 лет | Папильон Яша</title>
+<meta name="description" content="Развивающая онлайн-игра для детей 6 лет: звук С, соседи числа, летние и зимние виды спорта, память, число и количество. Подготовка к школе с папильоном Яшей.">
+<style>
+  :root{ --green:#2E7D32; --ink:#1a1a1a; --paper:#EAF6EE; --line:#C8E6C9; --card:#F1F8EE;
+         --red:#D32F2F; --blue:#0D3C8F; }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  html,body{margin:0;height:100%;background:linear-gradient(180deg,#EAF6EE,#DFF0DF);color:var(--ink);
+            font-family:"Segoe UI",Arial,sans-serif}
+  img{object-fit:contain;display:block}
+  h1{font-size:clamp(30px,7vw,50px);color:var(--green);text-align:center;line-height:1.15;margin:6px 0}
+  h2{font-size:clamp(32px,7.5vw,52px);color:var(--green);text-align:center;line-height:1.15;margin:6px 0}
+  p{font-size:clamp(26px,6vw,38px);line-height:1.3;margin:6px 0;text-align:center}
+  .sub{font-size:clamp(24px,5.4vw,34px);color:var(--ink);text-align:center;margin:4px 0 8px}
+  .sub.green{color:var(--green);font-weight:700}
+  .sub.plain{font-weight:400}
+  .top{width:100%;display:flex;justify-content:space-between;align-items:center;
+       font-size:clamp(17px,3.8vw,24px);color:var(--green);font-weight:400}
+  .counter{font-size:clamp(17px,3.8vw,24px);color:var(--green);font-weight:400}
+  .wrap{position:relative;min-height:100%;display:flex;flex-direction:column}
+  .screen{display:none;flex-direction:column;align-items:center;gap:8px;min-height:100vh;padding:10px 12px 130px;position:relative}
+  .screen.on{display:flex}
+  .row{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;width:100%;max-width:760px}
+  .btn{font-size:clamp(17px,3.8vw,24px);min-height:56px;padding:10px 18px;border-radius:14px;
+       border:2px solid var(--green);background:#fff;color:var(--green);font-weight:700;
+       cursor:pointer;touch-action:manipulation;font-family:inherit}
+  .btn.main{background:#fff;color:var(--green);border-width:3px;font-weight:800}
+  .btn.gray{color:#8a9a8a;border-color:#cfdccf}
+  .btn.let{min-width:46px;min-height:46px;padding:2px 8px;font-size:clamp(28px,7vw,38px);line-height:1.1}
+  .card{background:transparent;border:2px solid transparent;border-radius:16px;padding:4px;
+        display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;max-width:calc(33.3% - 14px)}
+  .card .pic{width:100%;height:auto;border-radius:10px;object-fit:contain}
+  .card img{max-height:13vh}
+  .card .word{font-size:clamp(16px,3.6vw,22px);font-weight:700;text-align:center;line-height:1.15}
+  .card.shake{animation:sh .45s}
+  .card.gone{opacity:.25;pointer-events:none}
+  .card.done{border-color:transparent;background:transparent;opacity:.4;pointer-events:none}
+  .card.sel{border-color:var(--green);box-shadow:0 0 0 3px rgba(46,125,50,.3)}
+  @keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .vowel{color:var(--red) !important}
+  .cons{color:var(--blue) !important}
+  .feedback{font-size:clamp(26px,5.6vw,36px);font-weight:700;color:var(--green);text-align:center;min-height:1.2em}
+  .video{width:100%;max-height:72vh;border-radius:14px;background:transparent;object-fit:contain}
+  .logo{max-width:min(58vw,320px);max-height:26vh;border-radius:22px;border:4px solid #fff;
+        box-shadow:0 6px 26px rgba(0,0,0,.18)}
+  .back{position:fixed;left:10px;bottom:12px;z-index:60;background:rgba(255,255,255,.7);
+        border:2px solid var(--green);color:var(--green);border-radius:22px;
+        padding:5px 14px;font-size:17px;line-height:1.2;cursor:pointer;opacity:.85;font-weight:700}
+  .back:active{background:rgba(255,255,255,.95)}
+  .foot{position:fixed;left:0;right:0;bottom:0;padding:10px 12px calc(16px + env(safe-area-inset-bottom));
+        background:linear-gradient(180deg,rgba(234,246,238,0) 0%,#EAF6EE 45%);display:flex;gap:12px;
+        justify-content:center;z-index:2147483000}
+  .stars{font-size:52px;text-align:center;line-height:1}
+  .final{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:clamp(28px,6.4vw,42px);
+         text-align:center;color:var(--green)}
+  .momcard{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px 14px;max-width:620px}
+  .momcard p{font-size:clamp(18px,4vw,26px) !important;margin:0 0 4px}
+  .momcard p:last-child{margin:0}
+  .skor{color:var(--green);font-size:clamp(22px,5vw,32px);text-align:center;font-weight:700;margin:2px 0}
+  .skor.big{font-size:clamp(26px,6vw,38px)}
+  .hide{display:none!important}
+  /* заголовок задания: по центру, чуть мельче (по чек-листу) */
+  .taskTitle{font-size:clamp(21px,4.8vw,30px);font-weight:700;color:var(--green);text-align:center;margin:2px 0 6px}
+  /* эмоции героев */
+  .heroReward{display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid var(--green);
+              border-radius:16px;padding:6px 12px;max-width:560px;animation:pop .4s}
+  .heroReward img{max-height:25vh;border-radius:14px}
+  .heroReward .hrtext{font-size:clamp(20px,4.8vw,28px);font-weight:800;color:var(--green)}
+  .heroEmotion{display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid var(--green);
+               border-radius:16px;padding:6px 12px;max-width:560px;animation:pop .4s}
+  .heroEmotion img{max-height:14vh;border-radius:14px}
+  .heroEmotion .hrtext{font-size:clamp(22px,5.2vw,30px);font-weight:800;color:var(--green)}
+  .heroThink{display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid var(--line);
+             border-radius:16px;padding:6px 12px;max-width:560px;animation:pop .4s}
+  .heroThink img{max-height:14vh;border-radius:14px}
+  .heroThink .hrtext{font-size:clamp(18px,4.2vw,24px);font-weight:700;color:#8a8474}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  /* фон от задания к заданию */
+  #s0,#s0b,#ss,#s7,#s8{background:linear-gradient(180deg,#EAF6EE,#DFF0DF)}
+  #s1{background:#F0F7EB}
+  #s2{background:#EDF3F8}
+  #s3{background:#FDF4E7}
+  #s4{background:#EEF6F3}
+  #s5{background:#F5EFF7}
+  #s0,#s0b{justify-content:center}
+  #s0 .video{max-height:46vh;max-width:min(82vw,560px)}
+  #ss{justify-content:center}
+  #ss .video{max-height:56vh}
+  /* задание 1: карточки 2×2 крупные — по чек-листу 24vh, одинаковая ширина */
+  #s1 .card{width:44%;max-width:44%}
+  #s1 .card img{max-height:24vh;width:100%;aspect-ratio:1/1;object-fit:contain;border-radius:10px}
+  #s1 .card.done img{filter:none}
+  #s1 .feedback{min-height:1em}
+  /* задание 2: соседи числа */
+  .nb{display:flex;align-items:center;gap:12px}
+  .nbig{font-size:clamp(56px,15vw,90px);font-weight:800;color:#1a1a1a;line-height:1}
+  .nslot{width:clamp(62px,16vw,92px);height:clamp(62px,16vw,92px);border:3px dashed var(--green);border-radius:16px;
+         background:#fff;display:flex;align-items:center;justify-content:center;
+         font-size:clamp(40px,10vw,58px);font-weight:800;color:var(--green);line-height:1}
+  .nslot.filled{border-style:solid}
+  .lenta{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;width:100%;max-width:560px}
+  .lenta button{padding:0;min-width:0;min-height:48px;font-size:clamp(20px,5vw,28px);font-weight:800}
+  .lenta.hl button{border-color:var(--green);background:#F0F7F0}
+  /* задание 3: корзины — картинки как в задании 1 (квадрат, целиком, крупно) */
+  #s3 .card{width:44%;max-width:44%;padding:4px;gap:2px}
+  #s3 .card img{max-height:24vh;width:100%;aspect-ratio:1/1;object-fit:contain}
+  #s3 .card .word{font-size:clamp(13px,3.2vw,16px)}
+  #s3 .feedback{min-height:1em}
+  #s3{gap:4px;padding-bottom:80px}
+  .zones{display:flex;gap:10px;width:100%;max-width:560px}
+  .zone{flex:1;min-height:48px;border-radius:16px;border:3px solid;display:flex;align-items:center;
+        justify-content:center;font-weight:800;font-size:clamp(14px,3.6vw,18px);cursor:pointer;padding:6px;text-align:center}
+  .zone.sum{background:linear-gradient(180deg,#FFF6D9,#FFE082);border-color:#F9A825;color:#8A5A00}
+  .zone.win{background:linear-gradient(180deg,#E3F2FD,#BBDEFB);border-color:#1E88E5;color:#0D47A1}
+  /* задание 4: что изменилось */
+  .mrow{display:flex;gap:8px;justify-content:center;width:100%;max-width:560px}
+  .mcell{width:21%;aspect-ratio:1/1;border:2px solid var(--line);border-radius:14px;background:#fff;
+         display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .mcell img{width:100%;height:100%;object-fit:contain;padding:4px}
+  .mcell.qmark{font-size:clamp(28px,7vw,44px);color:#8a9a8a;font-weight:800}
+  .variants{display:flex;gap:10px;justify-content:center;width:100%;max-width:560px}
+  .vcard{width:21%;aspect-ratio:1/1;border:2px solid var(--line);border-radius:14px;background:#fff;
+         display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden}
+  .vcard img{width:100%;height:100%;object-fit:contain;padding:4px}
+  .vcard.done{border-color:var(--green);background:#F0F7F0;pointer-events:none}
+  .vcard.hl{border-color:var(--green);background:#F0F7F0}
+  .vcard.shake{animation:sh .45s}
+  /* задание 5: число и количество */
+  .row5{display:flex;gap:12px;justify-content:center;align-items:flex-start;width:100%;max-width:560px}
+  .numcol{display:flex;flex-direction:column;gap:8px}
+  .numcol .btn{min-width:76px;min-height:52px;padding:4px 10px;font-size:clamp(24px,6vw,34px)}
+  .numcol .btn.sel{border-width:3px;background:#F0F7F0}
+  .numcol .btn.done{opacity:.35;pointer-events:none}
+  .grpcol{display:flex;flex-direction:column;gap:8px;flex:1;align-items:center}
+  .grp{background:#fff;border:2px solid var(--line);border-radius:14px;padding:6px;
+       display:flex;justify-content:center;gap:4px;flex-wrap:wrap;cursor:pointer;width:100%;max-width:180px}
+  .grp img{width:clamp(26px,6.6vw,34px);height:clamp(26px,6.6vw,34px);object-fit:contain;
+           border:1px solid var(--line);border-radius:6px;background:var(--card)}
+  .grp.done{opacity:.35;pointer-events:none;border-color:var(--green)}
+  .grp.hl{border-color:var(--green);background:#F0F7F0}
+  .grp.shake{animation:sh .45s}
+  #s7,#s8{justify-content:center}
+  #s7 .video{max-height:40vh}
+  #s8 .video{max-height:34vh}
+  #s8 .momcard{max-width:540px;padding:8px 12px}
+  #s8 .momcard p{font-size:clamp(15px,3.6vw,20px) !important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <button class="back" id="backBtn" data-act="goBack()">← Ещё разок!</button>
+
+  <!-- ЭКРАН 1: логотип и название -->
+  <section class="screen" id="s0">
+    <video class="logo" id="vidlogo" src="video/logo_yasha.mp4" poster="images/poster_logo.jpg"
+           autoplay muted loop playsinline preload="metadata"></video>
+    <h1>СПОРТ — НАШ ДРУГ</h1>
+    <p class="sub green">Продолжаем заниматься спортом<br>с Яшей, Наташей и Баловашкой!</p>
+    <p class="sub plain" style="font-size:clamp(18px,4vw,24px)">Развивающие игры для детей 6 лет</p>
+    <div class="row"><button class="btn main" data-act="go('s0b')">▶ Дальше</button></div>
+  </section>
+
+  <!-- ЭКРАН 2: видео и кнопка «Играть» -->
+  <section class="screen" id="s0b">
+    <video class="video" id="vidnach" src="video/nachalo.mp4" poster="images/poster_nachalo.jpg"
+           playsinline preload="metadata"></video>
+    <div class="row"><button class="btn main" data-act="playStart()">▶ Играть</button></div>
+  </section>
+
+  <!-- ЗАДАНИЕ 1. ПОЙМАЙ ЗВУК [С] -->
+  <section class="screen" id="s1">
+    <div class="top"><span>Задание 1 из 5</span><span class="counter" id="cntS1"></span></div>
+    <p class="sub green taskTitle">Помоги Баловашке: поймай звук [С]!</p>
+    <p class="sub green plain" style="font-size:clamp(17px,4vw,24px)">Нажми на картинки со звуком [С]!</p>
+    <div class="row" id="s1Box"></div>
+    <div class="feedback" id="fbS1"></div>
+  </section>
+
+  <!-- ЗАДАНИЕ 2. СОСЕДИ ЧИСЛА -->
+  <section class="screen" id="s2">
+    <div class="top"><span>Задание 2 из 5</span><span class="counter" id="cntS2"></span></div>
+    <p class="sub green taskTitle">Помоги Наташе: назови соседей числа!</p>
+    <p class="sub green plain" style="font-size:clamp(17px,4vw,24px)">Какие числа живут рядом? Нажми на них в числовой ленте!</p>
+    <div class="nb">
+      <div class="nslot" id="s2Left"></div>
+      <div class="nbig" id="s2Num"></div>
+      <div class="nslot" id="s2Right"></div>
+    </div>
+    <div class="lenta" id="s2Lenta"></div>
+    <div class="feedback" id="fbS2"></div>
+  </section>
+
+  <!-- СКОРОГОВОРКА (середина занятия) -->
+  <section class="screen" id="ss">
+    <h2>Скороговорка</h2>
+    <video class="video" id="vidskor" src="video/skorogovorka.mp4" poster="images/poster_skorogovorka.jpg"
+           playsinline preload="none"></video>
+    <div class="row"><button class="btn" data-act="playSkor()">▶ Послушать</button></div>
+    <p class="skor">Свисток свистит,<br>спортсмен спешит!</p>
+    <p class="skor big">Повтори три раза!</p>
+  </section>
+
+  <!-- ЗАДАНИЕ 3. КОРЗИНЫ: ЛЕТО И ЗИМА -->
+  <section class="screen" id="s3">
+    <div class="top"><span>Задание 3 из 5</span><span class="counter" id="cntS3"></span></div>
+    <p class="sub green taskTitle">Помоги Яше: распредели виды спорта!</p>
+    <p class="sub green plain" style="font-size:clamp(13px,3.2vw,17px)">Нажми на картинку, потом на корзину!</p>
+    <div class="row" id="s3Box"></div>
+    <div class="zones">
+      <div class="zone sum" data-act="s3Zone('sum')">Летние виды спорта ☀️</div>
+      <div class="zone win" data-act="s3Zone('win')">Зимние виды спорта ❄️</div>
+    </div>
+    <div class="feedback" id="fbS3"></div>
+  </section>
+
+  <!-- ЗАДАНИЕ 4. ЧТО ИЗМЕНИЛОСЬ? -->
+  <section class="screen" id="s4">
+    <div class="top"><span>Задание 4 из 5</span><span class="counter" id="cntS4"></span></div>
+    <p class="sub green taskTitle">Помоги Баловашке: чего не стало?</p>
+    <p class="sub green plain" id="q4Q" style="font-size:clamp(17px,4vw,24px)">Запомни картинки!</p>
+    <div class="mrow" id="s4Row"></div>
+    <div class="variants" id="s4Vars"></div>
+    <div class="feedback" id="fbS4"></div>
+    <button class="btn" data-act="s4Again()">🔊 Показать ещё раз</button>
+  </section>
+
+  <!-- ЗАДАНИЕ 5. СОЕДИНИ ЧИСЛО И КОЛИЧЕСТВО -->
+  <section class="screen" id="s5">
+    <div class="top"><span>Задание 5 из 5</span><span class="counter" id="cntS5"></span></div>
+    <p class="sub green taskTitle">Помоги Наташе: соедини число и количество!</p>
+    <p class="sub green plain" style="font-size:clamp(17px,4vw,24px)">Нажми на число, потом на картинки с таким же количеством!</p>
+    <div class="row5">
+      <div class="numcol" id="s5Nums"></div>
+      <div class="grpcol" id="s5Grps"></div>
+    </div>
+    <div class="feedback" id="fbS5"></div>
+  </section>
+
+  <!-- ПОСЛОВИЦА -->
+  <section class="screen" id="s7">
+    <video class="video" id="vidposl" src="video/poslovitsa.mp4" poster="images/poster_poslovitsa.jpg"
+           playsinline preload="none"></video>
+    <div class="row"><button class="btn" data-act="playPosl()">▶ Послушать</button></div>
+    <p class="final">«Кто спортом занимается,<br>тот чаще улыбается!»</p>
+    <p class="sub plain">Объясни Баловашке: что значит эта пословица?</p>
+  </section>
+
+  <!-- ФИНАЛ -->
+  <section class="screen" id="s8">
+    <div class="stars">⭐</div>
+    <p class="sub green">Держи медальку!</p>
+    <video class="video" id="viditog" src="video/itog.mp4" poster="images/poster_itog.jpg"
+           playsinline preload="none"></video>
+    <div class="momcard">
+      <p>Маме 💛</p>
+      <p>Спортивная минутка! Спросите ребёнка, какие слова со звуком [С] он запомнил.
+         Вместе назовите соседей чисел 5 и 8. Посчитайте до 10 прыжками, шагами или хлопками.
+         Объясните пословицу простыми словами.</p>
+    </div>
+    <button class="btn main" data-act="restart()">Пройти заново</button>
+  </section>
+
+</div>
+<div class="foot" id="foot"></div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   ЗАНЯТИЕ «СПОРТ — НАШ ДРУГ» (6 лет, занятие 2).
+   s0 титул → s0b видео «Начало» → s1 поймай звук [С] → s2 соседи числа
+   → ss скороговорка → s3 корзины лето/зима → s4 что изменилось
+   → s5 число и количество → s7 пословица → s8 финал
+   ════════════════════════════════════════════════════════════════════ */
+
+/* Озвучка экранов — записи Наташи (подключатся, когда пришлёт) */
+var SCREEN_SAY = { s1:'s1_intro', s2:'s2_intro', s3:'s3_intro', s4:'s4_intro', s5:'s5_intro' };
+
+var NEXT = { s0:'s0b', s0b:'s1', s1:'s2', s2:'ss', ss:'s3', s3:'s4', s4:'s5', s5:'s7', s7:'s8', s8:'' };
+var PREV = { s0b:'s0', s1:'s0b', s2:'s1', ss:'s2', s3:'ss', s4:'s3', s5:'s4', s7:'s5', s8:'s7' };
+function goBack(){ hush(); var on = document.querySelector('.screen.on'); if(!on || !PREV[on.id]) return; show(PREV[on.id]); }
+var VIDEO_SHOW = { s8:'viditog' };
+
+/* ═══ ДАННЫЕ ЗАНЯТИЯ ═══ */
+
+/* Задание 1: поймай звук [С] — 5 раундов по 4 картинки (2 со звуком [С]) */
+var S1 = [
+  [ { img:'svistok.jpg',   key:'svistok',   word:'свисток',   ok:1 },
+    { img:'sanki.jpg',     key:'sanki',     word:'санки',     ok:1 },
+    { img:'myach.jpg',     key:'myach',     word:'мяч',       ok:0 },
+    { img:'luk.jpg',       key:'luk',       word:'лук',       ok:0 } ],
+  [ { img:'skakalka.jpg',  key:'skakalka',  word:'скакалка',  ok:1 },
+    { img:'sneg.jpg',      key:'sneg',      word:'снег',      ok:1 },
+    { img:'gol.jpg',       key:'gol',       word:'гол',       ok:0 },
+    { img:'medal.jpg',     key:'medal',     word:'медаль',    ok:0 } ],
+  [ { img:'sumka.jpg',     key:'sumka',     word:'сумка',     ok:1 },
+    { img:'sportsmen.jpg', key:'sportsmen', word:'спортсмен', ok:1 },
+    { img:'kubok.jpg',     key:'kubok',     word:'кубок',     ok:0 },
+    { img:'konki.jpg',     key:'konki',     word:'коньки',    ok:0 } ],
+  [ { img:'svistok.jpg',   key:'svistok',   word:'свисток',   ok:1 },
+    { img:'stadion.jpg',   key:'stadion',   word:'стадион',   ok:1 },
+    { img:'hockey.jpg',    key:'hockey',    word:'хоккей',    ok:0 },
+    { img:'ganteli.jpg',   key:'ganteli',   word:'гантели',   ok:0 } ],
+  [ { img:'snegovik.jpg',  key:'snegovik',  word:'снеговик',  ok:1 },
+    { img:'snoubord.jpg',  key:'snoubord',  word:'сноуборд',  ok:1 },
+    { img:'shayba.jpg',    key:'shayba',    word:'шайба',     ok:0 },
+    { img:'lyzhi.jpg',     key:'lyzhi',     word:'лыжи',      ok:0 } ]
+];
+
+/* Задание 2: соседи числа (4 раунда) */
+var S2 = [5, 7, 8, 10];
+
+/* Задание 3: корзины — летние (sum) и зимние (win) виды спорта, 8 карточек */
+var S3 = [
+  { img:'futbol.jpg',     word:'футбол',           zone:'sum', key:'futbol',     say:'s3_w_1' },
+  { img:'gimnastika.jpg', word:'гимнастика',       zone:'sum', key:'gimnastika', say:'s3_w_2' },
+  { img:'tennis.jpg',     word:'теннис',           zone:'sum', key:'tennis',     say:'s3_w_3' },
+  { img:'plavanie.jpg',   word:'плавание',         zone:'sum', key:'plavanie',   say:'s3_w_4' },
+  { img:'hockey.jpg',     word:'хоккей',           zone:'win', key:'hockey',     say:'s3_w_5' },
+  { img:'lyzhi.jpg',      word:'лыжи',             zone:'win', key:'lyzhi',      say:'s3_w_6' },
+  { img:'figkat.jpg',     word:'фигурное катание', zone:'win', key:'figkat',     say:'s3_w_7' },
+  { img:'snoubord.jpg',   word:'сноуборд',         zone:'win', key:'snoubord',   say:'s3_w_8' }
+];
+
+/* Задание 4: чего не стало (4 раунда). miss — картинка, которая исчезла; decoy — другие картинки в вариантах */
+var S4 = [
+  { base:['myach.jpg','skakalka.jpg','svistok.jpg','medal.jpg'],   miss:'medal.jpg',   decoy:['kubok.jpg','ganteli.jpg','konki.jpg'] },
+  { base:['myach.jpg','skakalka.jpg','svistok.jpg','medal.jpg'],   miss:'svistok.jpg', decoy:['obruch.jpg','shayba.jpg','lyzhi.jpg'] },
+  { base:['ganteli.jpg','obruch.jpg','lyzhi.jpg','konki.jpg'],     miss:'obruch.jpg',  decoy:['myach.jpg','medal.jpg','skakalka.jpg'] },
+  { base:['ganteli.jpg','obruch.jpg','lyzhi.jpg','konki.jpg'],     miss:'konki.jpg',   decoy:['svistok.jpg','kubok.jpg','shayba.jpg'] }
+];
+
+/* Задание 5: число и количество — 2 раунда по 4 пары */
+var S5 = [
+  { n:3, img:'svistok.jpg',  say:'s5_1', word:'три свистка' },
+  { n:4, img:'obruch.jpg',   say:'s5_2', word:'четыре обруча' },
+  { n:5, img:'skakalka.jpg', say:'s5_3', word:'пять скакалок' },
+  { n:7, img:'myach.jpg',    say:'s5_4', word:'семь мячей' }
+];
+var S5_R2 = [
+  { n:3, img:'konki.jpg',   say:'s5_5', word:'три конька' },
+  { n:6, img:'ganteli.jpg', say:'s5_6', word:'шесть гантелей' },
+  { n:8, img:'shayba.jpg',  say:'s5_7', word:'восемь шайб' },
+  { n:9, img:'medal.jpg',   say:'s5_8', word:'девять медалей' }
+];
+
+/* Награда после выполненного задания — герой ЗАДАНИЯ, крупно */
+var REW = {
+  s1: { i:'balovashka_ura_big.jpg', t:'' },
+  s2: { i:'natasha_ura_big.jpg',    t:'' },
+  s3: { i:'yasha_ura_big.jpg',      t:'' },
+  s4: { i:'balovashka_ura_big.jpg', t:'' },
+  s5: { i:'natasha_ura_big.jpg',    t:'' }
+};
+
+/* ═══════════════════════════ КОД ДАЛЬШЕ НЕ ТРОГАЕМ ═══════════════════════════ */
+
+var PRAISE = ['genialno','tochno2','p_molodec','p_da','p_konechno','p_soglasna','p_aga','p_verno','p_ty_prav','p_konechno2'];
+/* Записи Наташи добавлять сюда по мере готовности */
+var HAVE = PRAISE.concat(['ne_tochno','nothing','povtori','m5_lv2',
+  'title_intro','s1_intro','s2_intro','s3_intro','s4_intro','s5_intro',
+  'word_myach','word_lyzhi','word_konki','word_shayba','word_ganteli','word_medal','word_skakalka','word_obruch','word_gol',
+  'word_svistok','word_sanki','word_sneg','word_sumka','word_sportsmen','word_stadion','word_snegovik','word_snoubord',
+  'word_luk','word_kubok','word_hockey',
+  's2_1','s2_2','s2_3','s2_4',
+  's3_w_1','s3_w_2','s3_w_3','s3_w_4','s3_w_5','s3_w_6','s3_w_7','s3_w_8']);
+var HAS_IMG = {};
+function loadImgList(list){ list.forEach(function(f){ HAS_IMG[f]=1; }); }
+function picture(src, cls){
+  if(HAS_IMG[src]) return '<img src="images/'+src+'" class="'+(cls||'')+'" alt="">';
+  return '';
+}
+function q(id){ return document.getElementById(id); }
+function shuffle(a){
+  a = a.slice();
+  for(var i = a.length-1; i > 0; i--){ var j = Math.floor(Math.random()*(i+1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+  return a;
+}
+function paint(s){
+  return String(s).split('').map(function(ch){
+    if('АЕЁИОУЫЭЮЯ'.indexOf(ch.toUpperCase()) > -1) return '<span class="vowel">'+ch+'</span>';
+    if(/[А-Яа-яЁё]/.test(ch)) return '<span class="cons">'+ch+'</span>';
+    return ch;
+  }).join('');
+}
+var current = null, lastPraise = '', unlocked = false;
+function hush(){ if(current){ try{ current.pause(); current.currentTime = 0; }catch(e){} } }
+function play(key){
+  hush();
+  if(HAVE.indexOf(key) > -1){ try{ current = new Audio('sounds/'+key+'.mp3'); current.play().catch(function(){}); }catch(e){} }
+}
+function praise(){
+  var pool = PRAISE.filter(function(x){ return x !== lastPraise; });
+  var pick = pool[Math.floor(Math.random()*pool.length)];
+  lastPraise = pick; play(pick);
+}
+function playVideo(id){
+  var v = q(id); if(!v) return;
+  try{ v.currentTime = 0; v.muted = false; v.play().catch(function(){ v.muted = true; v.play().catch(function(){}); }); }catch(e){}
+}
+function bindTapVideo(id){
+  var v = q(id); if(!v) return;
+  v.addEventListener('pointerdown', function(e){
+    e.preventDefault();
+    if(v.paused){ v.play().catch(function(){}); } else { v.pause(); }
+  });
+}
+function footNext(id, text){
+  var old = q('foot').querySelector('[data-act^="go("]');
+  if(old) old.remove();
+  var b = document.createElement('button');
+  b.className = 'btn main'; b.setAttribute('data-act','go("'+id+'")'); b.textContent = text || 'Дальше ➡';
+  q('foot').appendChild(b);
+}
+function footAct(fnName, text, id){
+  var old = q('foot').querySelector('[data-act^="skip"]');
+  if(old) old.remove();
+  var b = document.createElement('button');
+  b.className = 'btn'; b.id = 'skip_'+id;
+  b.setAttribute('data-act', fnName); b.textContent = text || 'Пропустить ➡';
+  q('foot').appendChild(b);
+}
+function giveSkip(id, fnName){
+  if(q('skip_'+id)) return;
+  if(fnName) footAct(fnName, 'Пропустить ➡', id);
+  else footAct('go("'+NEXT[id]+'")', 'Пропустить ➡', id);
+}
+function heroReward(id){
+  var r = REW[id]; if(!r) return;
+  var host = document.querySelector('.screen.on'); if(!host) return;
+  var old = host.querySelector('.heroReward'); if(old) old.remove();
+  var th = host.querySelector('.heroThink'); if(th) th.remove();
+  var em = host.querySelector('.heroEmotion'); if(em) em.remove();
+  var d = document.createElement('div');
+  d.className = 'heroReward';
+  d.innerHTML = picture(r.i) + (r.t ? '<div class="hrtext">' + r.t + '</div>' : '');
+  host.appendChild(d);
+}
+function heroEmotion(img, txt){
+  var host = document.querySelector('.screen.on'); if(!host) return;
+  var old = host.querySelector('.heroEmotion'); if(old) old.remove();
+  var th = host.querySelector('.heroThink'); if(th) th.remove();
+  var d = document.createElement('div');
+  d.className = 'heroEmotion';
+  d.innerHTML = picture(img) + (txt ? '<div class="hrtext">' + txt + '</div>' : '');
+  host.appendChild(d);
+}
+function heroThink(hero){
+  var host = document.querySelector('.screen.on'); if(!host) return;
+  var old = host.querySelector('.heroThink'); if(old) old.remove();
+  var d = document.createElement('div');
+  d.className = 'heroThink';
+  d.innerHTML = picture((hero||'balovashka') + '_dumaet.jpg') + '<div class="hrtext">Подумай ещё!</div>';
+  host.appendChild(d);
+}
+function clearEmotions(){
+  var host = document.querySelector('.screen.on'); if(!host) return;
+  var th = host.querySelector('.heroThink'); if(th) th.remove();
+  var em = host.querySelector('.heroEmotion'); if(em) em.remove();
+}
+function clearThink(){
+  var host = document.querySelector('.screen.on'); if(!host) return;
+  var th = host.querySelector('.heroThink'); if(th) th.remove();
+}
+function show(id){
+  hush();
+  [].slice.call(document.querySelectorAll('video')).forEach(function(v){ try{ v.pause(); v.currentTime = 0; }catch(e){} });
+  [].slice.call(document.querySelectorAll('.screen')).forEach(function(s){ s.classList.remove('on'); });
+  q(id).classList.add('on');
+  q('backBtn').style.display = (id === 's0' || id === 's0b' || id === 's7' || id === 's8') ? 'none' : 'block';
+  q('foot').innerHTML = '';
+  if(id === 'ss' || id === 's7'){                      /* видео-экраны: «Дальше» всегда доступно */
+    footNext(NEXT[id], 'Дальше ➡');
+  }
+  if(VIDEO_SHOW[id]) playVideo(VIDEO_SHOW[id]);
+  if(ONSHOW[id]) ONSHOW[id]();
+  var key = SCREEN_SAY[id];
+  if(key) play(key);
+}
+function go(id){ show(id); }
+function restart(){ location.reload(); }
+var ONSHOW = {};
+
+['pointerdown','touchstart','click'].forEach(function(ev){
+  document.addEventListener(ev, function(){
+    if(unlocked) return; unlocked = true;
+    try{ new Audio('sounds/nothing.mp3').play().catch(function(){}); }catch(e){}
+  }, true);
+});
+
+loadImgList(['poster_logo.jpg','poster_nachalo.jpg','poster_skorogovorka.jpg','poster_poslovitsa.jpg','poster_itog.jpg',
+  'myach.jpg','lyzhi.jpg','konki.jpg','shayba.jpg','ganteli.jpg','medal.jpg','gol.jpg','kubok.jpg',
+  'hockey.jpg','plavanie.jpg','tennis.jpg','skakalka.jpg','obruch.jpg',
+  'svistok.jpg','sanki.jpg','sneg.jpg','sumka.jpg','sportsmen.jpg','stadion.jpg','snegovik.jpg','snoubord.jpg',
+  'figkat.jpg','gimnastika.jpg','luk.jpg','futbol.jpg',
+  'balovashka_dumaet.jpg','balovashka_klass.jpg','natasha_klass.jpg','yasha_iskry.jpg',
+  'natasha_ura_big.jpg','yasha_ura_big.jpg','balovashka_ura_big.jpg',
+  'yasha_dumaet.jpg','natasha_dumaet.jpg']);
+
+bindTapVideo('vidnach'); bindTapVideo('vidskor'); bindTapVideo('vidposl'); bindTapVideo('viditog');
+
+/* ── ЭКРАН 1: логотип и название — фраза, за ней сразу экран с видео ── */
+ONSHOW['s0'] = function(){
+  play('title_intro');
+  if(current){ current.onended = function(){ show('s0b'); }; }
+  setTimeout(function(){ if(q('s0').classList.contains('on')) show('s0b'); }, 8600);
+};
+/* ── ЭКРАН 2: «Играть» запускает видео «Начало», после ролика — задание 1 ── */
+function playStart(){
+  var v = q('vidnach');
+  if(v && v.dataset.started === '1') return;
+  if(v) v.dataset.started = '1';
+  hush();
+  playVideo('vidnach');
+  footNext(NEXT.s0b, 'Продолжить ➡');
+}
+q('vidnach').addEventListener('ended', function(){ if(q('s0b').classList.contains('on')) show(NEXT.s0b); });
+setTimeout(function(){ if(q('s0b').classList.contains('on')) footNext(NEXT.s0b, 'Продолжить ➡'); }, 8000);
+
+/* ── 1. ПОЙМАЙ ЗВУК [С] ──────────────────────────────────────────── */
+var s1Round = 0, s1Found = 0, s1Err = 0;
+ONSHOW['s1'] = function(){
+  s1Round = 0; s1Err = 0;
+  /* кнопка «Послушать ещё раз» — в нижней панели, чтобы картинки были крупнее */
+  var b = document.createElement('button');
+  b.className = 'btn'; b.id = 'replayBtn';
+  b.setAttribute('data-act', 'replayS1()'); b.textContent = '🔊 Послушать ещё раз';
+  q('foot').appendChild(b);
+  drawS1();
+};
+function drawS1(){
+  clearEmotions();
+  s1Found = 0;
+  q('cntS1').textContent = 'Найдено: 0 из 2';
+  q('fbS1').textContent = '';
+  var box = q('s1Box'); box.innerHTML = '';
+  shuffle(S1[s1Round]).forEach(function(it){
+    var c = document.createElement('div');
+    c.className = 'card';
+    c.innerHTML = '<img class="pic" src="images/' + it.img + '"><div class="word">' + paint(it.word) + '</div>';
+    c.setAttribute('data-act', 's1Pick(el,' + it.ok + ',"' + it.key + '")');
+    box.appendChild(c);
+  });
+}
+function replayS1(){
+  /* «Послушать ещё раз» возвращает задание к первому этапу */
+  s1Round = 0; s1Err = 0;
+  var sk = q('skip_s1'); if(sk) sk.remove();
+  drawS1();
+  if(HAVE.indexOf('s1_intro') > -1) play('s1_intro');
+}
+function s1Pick(el, ok, key){
+  if(el.classList.contains('done')) return;
+  /* слово звучит при каждом нажатии, если запись есть */
+  if(HAVE.indexOf('word_' + key) >= 0) play('word_' + key);
+  if(ok){
+    s1Err = 0; clearThink();
+    el.classList.add('done');
+    s1Found++;
+    q('cntS1').textContent = 'Найдено: ' + s1Found + ' из 2';
+    if(s1Found === 2){
+      q('fbS1').textContent = 'Молодец!';
+      /* слово доигрывает, потом похвала (не перебивать!) */
+      var pd = false;
+      if(current){ current.onended = function(){ if(!pd){ pd = true; praise(); } }; }
+      setTimeout(function(){ if(!pd && q('s1').classList.contains('on')){ pd = true; praise(); } }, 2100);
+      s1Round++;
+      if(s1Round < S1.length){
+        setTimeout(function(){ drawS1(); }, 1800);
+      } else {
+        heroReward('s1');
+        setTimeout(function(){ footNext(NEXT.s1, 'Дальше ➡'); }, 1700);
+      }
+    } else {
+      heroEmotion('balovashka_klass.jpg', 'Верно!');
+    }
+  } else {
+    el.classList.add('shake');
+    setTimeout(function(){ el.classList.remove('shake'); }, 500);
+    q('fbS1').textContent = 'Почти! Послушай слово ещё раз.';
+    heroThink('balovashka');
+    if(++s1Err >= 3) giveSkip('s1', 's1Skip()');
+  }
+}
+function s1Skip(){
+  s1Err = 0; clearThink();
+  s1Round++;
+  if(s1Round < S1.length){ q('fbS1').textContent = ''; drawS1(); }
+  else { heroReward('s1'); footNext(NEXT.s1, 'Дальше ➡'); }
+  var s = q('skip_s1'); if(s) s.remove();
+}
+
+/* ── 2. СОСЕДИ ЧИСЛА ─────────────────────────────────────────────── */
+var s2Round = 0, s2Err = 0;
+ONSHOW['s2'] = function(){ s2Round = 0; s2Err = 0; drawS2(); };
+function drawS2(){
+  clearEmotions();
+  var n = S2[s2Round];
+  q('cntS2').textContent = 'Число ' + (s2Round+1) + ' из ' + S2.length;
+  q('fbS2').textContent = '';
+  q('s2Num').textContent = n;
+  var l = q('s2Left'), r = q('s2Right');
+  l.textContent = ''; r.textContent = '';
+  l.classList.remove('filled'); r.classList.remove('filled');
+  var box = q('s2Lenta'); box.innerHTML = '';
+  for(var i = 1; i <= 12; i++){
+    var b = document.createElement('button');
+    b.className = 'btn let';
+    b.textContent = i;
+    b.setAttribute('data-act', 's2Pick(el,"' + i + '")');
+    box.appendChild(b);
+  }
+}
+function s2Pick(el, v){
+  var n = S2[s2Round];
+  var num = Number(v);
+  if(num === n - 1 || num === n + 1){
+    s2Err = 0; clearThink();
+    el.disabled = true;
+    var slot = (num < n) ? q('s2Left') : q('s2Right');
+    if(slot.textContent){ /* это окно уже занято — снимаем блокировку с другой кнопки */
+      return;
+    }
+    slot.textContent = num;
+    slot.classList.add('filled');
+    if(q('s2Left').textContent !== '' && q('s2Right').textContent !== ''){
+      q('fbS2').textContent = 'Соседи числа ' + n + ': ' + (n-1) + ' и ' + (n+1) + '!';
+      if(HAVE.indexOf('s2_' + (s2Round+1)) >= 0){ play('s2_' + (s2Round+1)); } else { praise(); }
+      s2Round++;
+      if(s2Round < S2.length){
+        heroEmotion('natasha_klass.jpg', 'Верно!');
+        setTimeout(function(){ drawS2(); }, 2000);
+      } else {
+        heroReward('s2');
+        setTimeout(function(){ footNext(NEXT.s2, 'Дальше ➡'); }, 1700);
+      }
+    }
+  } else {
+    el.classList.add('shake');
+    setTimeout(function(){ el.classList.remove('shake'); }, 500);
+    q('fbS2').textContent = 'Почти! Посмотри на числовую ленту.';
+    var lenta = q('s2Lenta');
+    lenta.classList.remove('hl'); void lenta.offsetWidth; lenta.classList.add('hl');
+    setTimeout(function(){ lenta.classList.remove('hl'); }, 1200);
+    play('ne_tochno');
+    heroThink('natasha');
+    if(++s2Err >= 3) giveSkip('s2', 's2Skip()');
+  }
+}
+function s2Skip(){
+  s2Err = 0; clearThink();
+  s2Round++;
+  if(s2Round < S2.length){ q('fbS2').textContent = ''; drawS2(); }
+  else { heroReward('s2'); footNext(NEXT.s2, 'Дальше ➡'); }
+  var s = q('skip_s2'); if(s) s.remove();
+}
+
+/* ── 3. КОРЗИНЫ: ЛЕТО И ЗИМА (2 этапа по 4 карточки) ─────────────── */
+var s3Sel = null, s3Done = 0, s3Err = 0, s3Stage = 0, s3Stages = [];
+ONSHOW['s3'] = function(){
+  clearEmotions();
+  s3Sel = null; s3Done = 0; s3Err = 0; s3Stage = 0;
+  var sum = shuffle(S3.filter(function(x){ return x.zone === 'sum'; }));
+  var win = shuffle(S3.filter(function(x){ return x.zone === 'win'; }));
+  s3Stages = [ shuffle(sum.slice(0,2).concat(win.slice(0,2))),
+               shuffle(sum.slice(2).concat(win.slice(2))) ];
+  q('cntS3').textContent = 'Разложено: 0 из 8';
+  q('fbS3').textContent = '';
+  drawS3Stage();
+};
+function drawS3Stage(){
+  var box = q('s3Box'); box.innerHTML = '';
+  q('fbS3').textContent = '';
+  s3Stages[s3Stage].forEach(function(it){
+    var c = document.createElement('div');
+    c.className = 'card';
+    c.innerHTML = '<img class="pic" src="images/' + it.img + '"><div class="word">' + paint(it.word) + '</div>';
+    c.dataset.zone = it.zone;
+    c.dataset.say = it.say;
+    c.setAttribute('data-act', 's3Pick(el)');
+    box.appendChild(c);
+  });
+}
+function s3Pick(el){
+  if(el.classList.contains('gone') || el.classList.contains('done')) return;
+  var cards = q('s3Box').querySelectorAll('.card');
+  cards.forEach(function(c){ c.classList.remove('sel'); });
+  el.classList.add('sel');
+  s3Sel = el;
+  var key = el.querySelector('img').src.split('/').pop().replace('.jpg','');
+  if(HAVE.indexOf('word_' + key) >= 0) play('word_' + key);
+}
+function s3Zone(zone){
+  if(!s3Sel) return;
+  var el = s3Sel; s3Sel = null;
+  el.classList.remove('sel');
+  if(el.dataset.zone === zone){
+    s3Err = 0; clearThink();
+    el.classList.add('done');
+    s3Done++;
+    q('cntS3').textContent = 'Разложено: ' + s3Done + ' из 8';
+    if(HAVE.indexOf(el.dataset.say) >= 0){ play(el.dataset.say); } else { praise(); }
+    var left = q('s3Box').querySelectorAll('.card:not(.done)').length;
+    if(left === 0){
+      q('fbS3').textContent = 'Молодец!';
+      if(s3Stage === 0){
+        s3Stage = 1;
+        setTimeout(function(){ drawS3Stage(); }, 1500);
+      } else {
+        heroReward('s3');
+        setTimeout(function(){ footNext(NEXT.s3, 'Дальше ➡'); }, 1700);
+      }
+    } else {
+      heroEmotion('yasha_iskry.jpg', 'Верно!');
+    }
+  } else {
+    el.classList.add('shake');
+    setTimeout(function(){ el.classList.remove('shake'); }, 500);
+    q('fbS3').textContent = (zone === 'win')
+      ? 'Подумай: это про лёд или про траву?'
+      : 'Это летний вид спорта или зимний?';
+    play('ne_tochno');
+    heroThink('yasha');
+    if(++s3Err >= 3) giveSkip('s3');
+  }
+}
+
+/* ── 4. ЧТО ИЗМЕНИЛОСЬ? ──────────────────────────────────────────── */
+var s4Round = 0, s4Err = 0, s4T = [];
+function s4Clear(){ s4T.forEach(function(t){ clearTimeout(t); }); s4T = []; }
+ONSHOW['s4'] = function(){
+  s4Clear();
+  s4Round = 0; s4Err = 0;
+  drawS4();
+};
+function drawS4(){
+  s4Clear();
+  clearEmotions();
+  var it = S4[s4Round];
+  q('cntS4').textContent = 'Раунд ' + (s4Round+1) + ' из ' + S4.length;
+  q('fbS4').textContent = '';
+  q('q4Q').textContent = 'Запомни картинки!';
+  q('s4Vars').innerHTML = '';
+  renderRow(it.base);
+  s4T.push(setTimeout(function(){
+    q('q4Q').textContent = 'Запоминай!';
+    renderRowMask();
+    s4T.push(setTimeout(function(){
+      q('q4Q').textContent = 'Чего не стало? Нажми на эту картинку внизу!';
+      renderRow(it.base, it.miss);
+      renderVars(it);
+    }, 1000));
+  }, 3000));
+}
+function renderRow(list, miss){
+  var row = q('s4Row'); row.innerHTML = '';
+  list.forEach(function(src){
+    var c = document.createElement('div');
+    c.className = 'mcell';
+    if(src && src !== miss){ var im = document.createElement('img'); im.src = 'images/' + src; c.appendChild(im); }
+    else { c.classList.add('qmark'); c.textContent = '?'; }
+    row.appendChild(c);
+  });
+}
+function renderRowMask(){
+  var row = q('s4Row'); row.innerHTML = '';
+  for(var i = 0; i < 4; i++){
+    var c = document.createElement('div');
+    c.className = 'mcell qmark'; c.textContent = '?';
+    row.appendChild(c);
+  }
+}
+function renderVars(it){
+  var box = q('s4Vars'); box.innerHTML = '';
+  /* внизу — пропавшая картинка (правильный ответ) + три другие */
+  shuffle([it.miss].concat(it.decoy)).forEach(function(src){
+    var c = document.createElement('div');
+    c.className = 'vcard';
+    var im = document.createElement('img'); im.src = 'images/' + src;
+    c.appendChild(im);
+    c.dataset.img = src;
+    c.setAttribute('data-act', 's4VPick(el)');
+    box.appendChild(c);
+  });
+}
+function s4Again(){
+  var it = S4[s4Round];
+  q('fbS4').textContent = '';
+  q('q4Q').textContent = 'Запоминай!';
+  q('s4Vars').innerHTML = '';
+  renderRow(it.base);
+  s4Clear();
+  s4T.push(setTimeout(function(){
+    q('q4Q').textContent = 'Чего не стало? Нажми на эту картинку внизу!';
+    renderRow(it.base, it.miss);
+    renderVars(it);
+  }, 2000));
+}
+function s4VPick(el){
+  if(el.classList.contains('done')) return;
+  var it = S4[s4Round];
+  if(el.dataset.img === it.miss){
+    s4Err = 0; clearThink();
+    var vc = q('s4Vars').querySelector('.vcard[data-img="' + it.miss + '"]');
+    if(vc) vc.classList.add('done');
+    q('fbS4').textContent = 'Молодец!';
+    praise();
+    s4Round++;
+    if(s4Round < S4.length){
+      heroEmotion('balovashka_klass.jpg', 'Верно!');
+      s4T.push(setTimeout(function(){ drawS4(); }, 1800));
+    } else {
+      heroReward('s4');
+      s4T.push(setTimeout(function(){ footNext(NEXT.s4, 'Дальше ➡'); }, 1700));
+    }
+  } else {
+    el.classList.add('shake');
+    setTimeout(function(){ el.classList.remove('shake'); }, 500);
+    q('fbS4').textContent = 'Почти! Посмотри внимательно.';
+    var vc = q('s4Vars').querySelector('.vcard[data-img="' + it.miss + '"]');
+    if(vc) vc.classList.add('hl');
+    setTimeout(function(){
+      q('s4Vars').querySelectorAll('.vcard').forEach(function(v){ v.classList.remove('hl'); });
+    }, 1400);
+    play('ne_tochno');
+    heroThink('balovashka');
+    if(++s4Err >= 3) giveSkip('s4', 's4Skip()');
+  }
+}
+function s4Skip(){
+  s4Clear();
+  s4Err = 0; clearThink();
+  s4Round++;
+  if(s4Round < S4.length){ q('fbS4').textContent = ''; drawS4(); }
+  else { heroReward('s4'); footNext(NEXT.s4, 'Дальше ➡'); }
+  var s = q('skip_s4'); if(s) s.remove();
+}
+
+/* ── 5. ЧИСЛО И КОЛИЧЕСТВО ───────────────────────────────────────── */
+var s5Sel = null, s5Pairs = 0, s5Err = 0, s5Lv = 1;
+ONSHOW['s5'] = function(){
+  clearEmotions();
+  s5Sel = null; s5Pairs = 0; s5Err = 0; s5Lv = 1;
+  drawS5(S5);
+};
+function drawS5(list){
+  s5Sel = null; s5Pairs = 0;
+  q('cntS5').textContent = 'Пары: 0 из 4';
+  q('fbS5').textContent = '';
+  var nums = q('s5Nums'); nums.innerHTML = '';
+  shuffle(list.map(function(g){ return g.n; })).forEach(function(n){
+    var b = document.createElement('button');
+    b.className = 'btn';
+    b.textContent = n;
+    b.setAttribute('data-act', 's5NumPick(el,"' + n + '")');
+    nums.appendChild(b);
+  });
+  var grps = q('s5Grps'); grps.innerHTML = '';
+  shuffle(list).forEach(function(g){
+    var d = document.createElement('div');
+    d.className = 'grp';
+    var inner = '';
+    for(var i = 0; i < g.n; i++) inner += '<img src="images/' + g.img + '">';
+    d.innerHTML = inner;
+    d.dataset.n = g.n;
+    d.dataset.say = g.say;
+    d.dataset.word = g.word;
+    d.setAttribute('data-act', 's5GrpPick(el)');
+    grps.appendChild(d);
+  });
+}
+function s5NumPick(el, n){
+  var nums = q('s5Nums').querySelectorAll('.btn');
+  nums.forEach(function(b){ b.classList.remove('sel'); });
+  el.classList.add('sel');
+  s5Sel = Number(n);
+}
+function s5GrpPick(el){
+  if(el.classList.contains('done')) return;
+  if(s5Sel === null) return;
+  var n = Number(el.dataset.n);
+  if(n === s5Sel){
+    s5Err = 0; clearThink();
+    var nb = q('s5Nums').querySelector('.btn.sel');
+    nb.classList.remove('sel'); nb.classList.add('done');
+    el.classList.add('done');
+    s5Sel = null;
+    s5Pairs++;
+    q('cntS5').textContent = 'Пары: ' + s5Pairs + ' из 4';
+    q('fbS5').textContent = n + ' — это ' + el.dataset.word + '!';
+    if(HAVE.indexOf(el.dataset.say) >= 0){ play(el.dataset.say); } else { praise(); }
+    if(s5Pairs === 4){
+      if(s5Lv === 1){
+        s5Lv = 2;
+        q('fbS5').textContent = 'Молодец! А теперь ещё раз!';
+        if(HAVE.indexOf('m5_lv2') >= 0){ play('m5_lv2'); } else { praise(); }
+        setTimeout(function(){ drawS5(S5_R2); }, 1800);
+      } else {
+        q('fbS5').textContent = 'Молодец!';
+        heroReward('s5');
+        setTimeout(function(){ footNext(NEXT.s5, 'Дальше ➡'); }, 1700);
+      }
+    } else {
+      heroEmotion('natasha_klass.jpg', 'Верно!');
+    }
+  } else {
+    el.classList.add('shake');
+    setTimeout(function(){ el.classList.remove('shake'); }, 500);
+    q('fbS5').textContent = 'Почти! Посчитай предметы.';
+    el.classList.add('hl');
+    setTimeout(function(){ el.classList.remove('hl'); }, 1200);
+    play('ne_tochno');
+    heroThink('natasha');
+    if(++s5Err >= 3) giveSkip('s5');
+  }
+}
+
+/* ── СКОРОГОВОРКА: кнопка «Послушать», после ролика — «Повтори три раза!» ── */
+function playSkor(){
+  hush();
+  var v = q('vidskor'); if(!v) return;
+  if(v.paused){ v.play().catch(function(){}); }
+}
+q('vidskor').addEventListener('ended', function(){ play('povtori'); });
+
+/* ── ПОСЛОВИЦА: кнопка «Послушать» ── */
+function playPosl(){
+  hush();
+  var v = q('vidposl'); if(!v) return;
+  if(v.paused){ v.play().catch(function(){}); }
+}
+
+/* ── клики: всё на касание (pointerdown), как требует чек-лист ── */
+document.addEventListener('pointerdown', function(e){
+  var el = e.target.closest ? e.target.closest('[data-act]') : null;
+  if(!el) return;
+  e.preventDefault();
+  var code = el.getAttribute('data-act');
+  try{ (new Function('var el=arguments[0];' + code))(el); }catch(err){}
+}, false);
+
+show('s0');
+</script>
+</body>
+</html>
